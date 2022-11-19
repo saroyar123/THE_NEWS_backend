@@ -11,6 +11,13 @@ app.get('/',(req,res)=>{
   })
 })
 
+app.get('/home',(req,res)=>{
+    res.status(200).json({
+      success:true,
+      message:"you are in home"
+    })
+})
+
 app.listen(process.env.PORT,()=>{
     console.log("server is running");
 })
