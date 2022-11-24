@@ -1,8 +1,19 @@
 const express=require('express');
-const cors=require('cors')
+const cors=require('cors');
+const dotenv=require('dotenv');
+const cookieparser=require('cookie-parser');
+const {connect}=require('./database/connect');
+const router = require('./routes/userRoute');
+
+dotenv.config();
+connect();
 
 const app=express();
+
 app.use(cors());
+app.use(express.json());
+app.use(cookieparser());
+
 
 app.get('/',(req,res)=>{
   res.status(200).json({
@@ -11,12 +22,10 @@ app.get('/',(req,res)=>{
   })
 })
 
-app.get('/home',(req,res)=>{
-    res.status(200).json({
-      success:true,
-      message:"you are in home"
-    })
-})
+
+app.use('/api',router);
+
+
 
 app.listen(process.env.PORT,()=>{
     console.log("server is running");
