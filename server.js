@@ -3,7 +3,10 @@ const cors=require('cors');
 const dotenv=require('dotenv');
 const cookieparser=require('cookie-parser');
 const {connect}=require('./database/connect');
-const router = require('./routes/userRoute');
+const userRouter = require('./routes/userRoute');
+const postRouter=require('./routes/postRoute');
+
+
 
 dotenv.config();
 connect();
@@ -23,7 +26,8 @@ app.get('/',(req,res)=>{
 })
 
 
-app.use('/api',router);
+app.use('/api',userRouter);
+app.use('/api',postRouter);
 
 
 

@@ -19,7 +19,12 @@ const userSchema=new mongoose.Schema({
     posts:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"post"
-      },]
+      },],
+
+    likedPosts:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"post"
+    },]
 })
 
 module.exports=mongoose.model("users",userSchema);
