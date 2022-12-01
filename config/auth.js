@@ -5,6 +5,15 @@ exports.auth=async(req,res,next)=>{
     try {
         
         const {token}=req.cookies;
+        if(!token)
+        {
+            return res.status(200).json({
+                success:false,
+                message:"you are not authinticated"
+            })
+        }
+
+
         const userEmail=jwt.verify(token,process.env.jwtPrivateKey);
         const user=await User.findOne({email:userEmail.email})
 
