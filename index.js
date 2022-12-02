@@ -5,7 +5,8 @@ const cookieparser=require('cookie-parser');
 const {connect}=require('./database/connect');
 const userRouter = require('./routes/userRoute');
 const postRouter=require('./routes/postRoute');
-
+var util= require('util');
+var encoder = new util.TextEncoder('utf-8');
 
 
 dotenv.config();
