@@ -5,8 +5,8 @@ const cookieparser=require('cookie-parser');
 const {connect}=require('./database/connect');
 const userRouter = require('./routes/userRoute');
 const postRouter=require('./routes/postRoute');
-var util= require('util');
-var encoder = new util.TextEncoder('utf-8');
+// var util= require('util');
+// var encoder = new util.TextEncoder('utf-8');
 
 
 dotenv.config();
@@ -33,5 +33,5 @@ app.use('/api',postRouter);
 
 
 app.listen(process.env.PORT,()=>{
-    console.log("server is running");
+    console.log(`server is running ${process.env.PORT}`);
 })

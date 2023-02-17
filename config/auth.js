@@ -5,6 +5,7 @@ exports.auth=async(req,res,next)=>{
     try {
         
         const {token}=req.cookies;
+        // console.log(req)
         if(!token)
         {
             return res.status(200).json({

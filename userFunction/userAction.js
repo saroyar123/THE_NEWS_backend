@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
       httpOnly: true,
     };
 
-    res.status(200).cookie("token", token, option).json({
+    res.status(201).cookie("token", token, option).json({
       success: true,
       user,
       token,
@@ -72,6 +72,7 @@ exports.getAllUser = async (req, res) => {
 exports.userLogin = async (req, res) => {
   try {
     const { password, email } = req.body;
+    // console.log(req.cookie)
 
     if (!password || !email) {
       return res.status(400).json({
