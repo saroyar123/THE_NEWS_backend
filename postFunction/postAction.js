@@ -4,14 +4,14 @@ const User = require("../model/userModel");
 // create post
 exports.createPost = async (req, res) => {
   try {
-    const { caption, image } = req.body;
-    if (!caption || !image) {
+    const { caption, image,location} = req.body;
+    if (!caption || !image||!location) {
       return res.status(400).json({
         success: false,
         message: "need all document",
       });
     }
-    const userPost = await Post.create({ caption, image });
+    const userPost = await Post.create({ caption, image,location});
     req.user.posts.push(userPost);
     await req.user.save();
 
