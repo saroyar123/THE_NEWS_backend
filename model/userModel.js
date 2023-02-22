@@ -28,7 +28,24 @@ const userSchema=new mongoose.Schema({
     unlikePosts:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"post"
-    }]
+    }],
+    location: {
+        name:String,
+        coordinates: {
+          latitude:Number,
+          logititude:Number
+        }
+      },
+    cteatedAt:{
+        type:Date,
+        default:Date.now()
+    },
+    value:{
+        type:Number,
+        default:100
+    }
+      
+    
 })
 
 module.exports=mongoose.model("users",userSchema);

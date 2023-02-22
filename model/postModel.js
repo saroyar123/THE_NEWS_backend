@@ -23,7 +23,7 @@ const postSchema=new mongoose.Schema({
           logititude:Number
         }
       },
-      cteatedAt:{
+    cteatedAt:{
         type:Date,
         default:Date.now()
     },
