@@ -5,7 +5,7 @@ const { createPost, likePost, deletePost } = require('../postFunction/postAction
 const router=express.Router();
 
 router.post('/post',auth,createPost);
-router.post('/like/:id',auth,likePost);
+router.post('/like/:id/:lu',auth,likePost);
 router.delete('/post/:id',auth,deletePost);
 
 module.exports=router;

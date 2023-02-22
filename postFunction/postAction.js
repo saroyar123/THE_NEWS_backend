@@ -32,20 +32,29 @@ exports.createPost = async (req, res) => {
 exports.likePost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const likedPost = await Post.findOne({ _id: postId });
-    if (!likedPost) {
+    let lu=0;
+    lu=req.params.lu;  // a value that determine user like or unlike the post
+    // 1 for the like or remove the like 
+    // 2 for unlike and the remove the unlike
+    lu=parseInt(lu);
+    // console.log(typeof(lu))
+
+    const thePost = await Post.findOne({ _id: postId });
+    if (!thePost) {
       return res.status(400).json({
         success: false,
         message: "post not found",
       });
     }
 
-    const liked = likedPost.likes.includes(req.user._id);
+    const liked = thePost.likes.includes(req.user._id);
+    const unliked=thePost.disLikes.includes(req.user._id);
 
-    if (liked) {
-      const index = likedPost.likes.indexOf(req.user._id);
-      likedPost.likes.splice(index, 1);
-      await likedPost.save();
+    // remove like from the post
+    if (liked&&lu===1) {
+      const index = thePost.likes.indexOf(req.user._id);
+      thePost.likes.splice(index, 1);
+      await thePost.save();
 
       const userIndex = req.user.likedPosts.indexOf(postId);
       req.user.likedPosts.splice(userIndex, 1);
@@ -53,20 +62,87 @@ exports.likePost = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "you are unliked the post",
+        message: "you are like is remove from the post",
+      });
+    }
+    else if(lu===1)
+    {
+
+      // if the post unliked
+      if(unliked)
+      {
+        const index = thePost.disLikes.indexOf(req.user._id);
+        thePost.disLikes.splice(index, 1);
+        await thePost.save();
+  
+        const userIndex = req.user.unlikePosts.indexOf(postId);
+        req.user.unlikePosts.splice(userIndex, 1);
+        await req.user.save();
+      }
+
+      // like the post
+      thePost.likes.push(req.user);
+      await thePost.save();
+  
+      req.user.likedPosts.push(thePost);
+      await req.user.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "you like the post",
       });
     }
 
-    likedPost.likes.push(req.user);
-    await likedPost.save();
+    
+// remove the unlike from the post
+    if (unliked&&lu===2) {
+      const index = thePost.disLikes.indexOf(req.user._id);
+      thePost.disLikes.splice(index, 1);
+      await thePost.save();
 
-    req.user.likedPosts.push(likedPost);
-    await req.user.save();
+      const userIndex = req.user.unlikePosts.indexOf(postId);
+      req.user.unlikePosts.splice(userIndex, 1);
+      await req.user.save();
 
-    res.status(200).json({
-      success: true,
-      message: "you like the post",
-    });
+      return res.status(200).json({
+        success: true,
+        message: "you are unlike is remove from the post",
+      });
+    }
+    else if(lu===2)
+    {
+      // if the post liked
+      if(liked)
+      {
+        const index = thePost.likes.indexOf(req.user._id);
+        thePost.likes.splice(index, 1);
+        await thePost.save();
+  
+        const userIndex = req.user.likedPosts.indexOf(postId);
+        req.user.likedPosts.splice(userIndex, 1);
+        await req.user.save();
+      }
+     
+      // unlike the post
+      thePost.disLikes.push(req.user);
+      await thePost.save();
+
+      req.user.unlikePosts.push(thePost);
+      await req.user.save();
+
+      return res.status(200).json({
+        success:true,
+        message:"unlike the post"
+      })
+    }
+
+
+    res.status(400).json({
+      success:false,
+      message:"something is wrong"
+    })
+
+  
   } catch (error) {
     res.status(200).json({
       success: false,

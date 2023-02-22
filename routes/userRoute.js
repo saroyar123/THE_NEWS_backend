@@ -5,7 +5,7 @@ const { register, getAllUser, userLogin, deleteUser, logout} = require('../userF
 const router=express.Router();
 
 router.post('/login',userLogin);
-router.post("/user",register);
+router.post("/register",register);
 router.get("/getUser",auth,getAllUser);
 router.delete('/deleteUser',auth,deleteUser);
 router.get('/logout',auth,logout);

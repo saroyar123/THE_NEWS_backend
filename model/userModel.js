@@ -24,7 +24,11 @@ const userSchema=new mongoose.Schema({
     likedPosts:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"post"
-    },]
+    },],
+    unlikePosts:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"post"
+    }]
 })
 
 module.exports=mongoose.model("users",userSchema);

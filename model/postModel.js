@@ -12,6 +12,10 @@ const postSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
     },],
+    disLikes:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    }],
     location: {
         name:String,
         coordinates: {
@@ -23,6 +27,17 @@ const postSchema=new mongoose.Schema({
         type:Date,
         default:Date.now()
     },
+    verify:{
+        type:Boolean,
+        default:false
+    },
+    comments:[{
+        comment:String,
+        commented_user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"user"
+        }
+    }]
 })
 
 
