@@ -29,6 +29,10 @@ const userSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"post"
     }],
+    commentOnPosts:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"post"
+    }],
     location: {
         name:String,
         coordinates: {

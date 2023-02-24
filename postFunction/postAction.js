@@ -204,3 +204,109 @@ exports.deletePost = async (req, res) => {
     });
   }
 };
+
+
+// comment on a post
+
+exports.commentOnPost=async(req,res)=>{
+  try {
+    const post_Id=req.params.id;
+    const {comment}=req.body;
+
+    if(!post_Id||!comment)
+    {
+      return res.status(400).status({
+        success:false,
+        message:"some data is mising"
+      })
+    }
+     console.log(comment)
+    const post=await Post.findOne({_id:post_Id});
+    post.comments.push({comment:comment,commented_user:req.user});
+    await post.save();
+    console.log(comment)
+
+    req.user.commentOnPosts.push(post);
+    await req.user.save();
+    console.log(comment)
+
+    res.status(200).json({
+      success:true,
+      message:"Your comment is added"
+    })
+
+
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// delete the authenticated user's comment
+
+exports.deleteComment=async(req,res)=>{
+  try {
+    const post_Id=req.params.id;
+
+    const post=await Post.findOne({_id:post_Id});
+    if(!post)
+    {
+       return res.status(400).json({
+        success:false,
+        message:"post not exist"
+       })
+    }
+
+    let index_user=-1;
+    let index_post=-1;
+    
+    for(index_user=0;index_user<post.comments.length;index_user++)
+    {
+      if(post.comments[index_user].commented_user.equals(req.user._id))
+       {
+        //  await post.comments[index_user].remove();
+         break;
+       }
+    }
+    
+    index_post=req.user.commentOnPosts.indexOf(post_Id);
+
+    console.log(index_post,index_user)
+
+    if(index_user==-1)
+    {
+      return res.status(400).json({
+        success:false,
+        message:"commet first"
+      })
+    }
+
+    if(index_post==-1)
+    {
+      return res.status(400).json({
+        success:false,
+        message:"user may not comment on this post"
+      })
+    }
+
+    post.comments.splice(index_user,1);
+    await post.save();
+
+    req.user.commentOnPosts.splice(index_post,1);
+    await req.user.save();
+
+    res.status(200).json({
+      success:true,
+      message:"your comment is deleted"
+    })
+
+
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
