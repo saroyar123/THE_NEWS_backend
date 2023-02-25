@@ -1,5 +1,6 @@
 const Post = require("../model/postModel");
 const User = require("../model/userModel");
+const LocationDB=require('../model/location');
 
 // create post
 exports.createPost = async (req, res) => {
@@ -14,6 +15,19 @@ exports.createPost = async (req, res) => {
     const userPost = await Post.create({ caption, image,location});
     req.user.posts.push(userPost);
     await req.user.save();
+
+    const LocalUser=await LocationDB.findOne({name:location.name});
+    if(!LocalUser)
+    {
+      const newLocation=await LocationDB.create({location});
+      newLocation.localPosts.push(userPost);
+      await newLocation.save();
+    }
+    else
+    {
+      LocalUser.localPosts.push(userPost);
+      await LocalUser.save();
+    }
 
     res.status(200).json({
       success: true,
@@ -220,15 +234,12 @@ exports.commentOnPost=async(req,res)=>{
         message:"some data is mising"
       })
     }
-     console.log(comment)
     const post=await Post.findOne({_id:post_Id});
     post.comments.push({comment:comment,commented_user:req.user});
     await post.save();
-    console.log(comment)
 
     req.user.commentOnPosts.push(post);
     await req.user.save();
-    console.log(comment)
 
     res.status(200).json({
       success:true,

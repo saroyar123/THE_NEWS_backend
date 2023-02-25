@@ -1,13 +1,14 @@
 const User = require("../model/userModel");
 const Post=require("../model/postModel");
 const jwt = require("jsonwebtoken");
+const LocationDB=require('../model/location');
 
 // register user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password,location } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password||!location) {
       return res.status(400).json({
         success: false,
         message: "provide all document",
@@ -26,7 +27,20 @@ exports.register = async (req, res) => {
       });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password,location });
+
+    const LocalUser=await LocationDB.findOne({name:location.name});
+    if(!LocalUser)
+    {
+      const newLocation=await LocationDB.create({location});
+      newLocation.localUsers.push(user);
+      await newLocation.save();
+    }
+    else
+    {
+      LocalUser.localUsers.push(user);
+      await LocalUser.save();
+    }
 
     const token = jwt.sign({ email: email }, process.env.jwtPrivateKey);
 
@@ -169,6 +183,8 @@ exports.logout=async(req,res)=>{
       success:true,
       message:"you are logout"
     })
+
+
 
   } catch (error) {
     res.status(200).json({
