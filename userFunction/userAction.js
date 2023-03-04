@@ -51,7 +51,7 @@ exports.register = async (req, res) => {
       httpOnly: true,
     };
 
-    res.status(201).cookie("token", token, option).json({
+    res.status(201).json({
       success: true,
       user,
       token,
@@ -68,7 +68,7 @@ exports.register = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const data = await User.find().populate('posts');
+    const data = await User.find({email:req.user.email}).populate('posts');
 
     res.status(200).json({
       success: true,
@@ -108,13 +108,10 @@ exports.userLogin = async (req, res) => {
 
     res
       .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      })
       .json({
         success:true,
-        user
+        user,
+        token
       });
   } catch (error) {
     res.status(200).json({

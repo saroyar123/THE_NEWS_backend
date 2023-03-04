@@ -6,9 +6,9 @@ const router=express.Router();
 
 router.post('/login',userLogin);
 router.post("/register",register);
-router.get("/getUser",auth,getAllUser);
-router.delete('/deleteUser',auth,deleteUser);
-router.get('/logout',auth,logout);
+router.get("/getUser/:token",auth,getAllUser);
+router.delete('/deleteUser/:token',auth,deleteUser);
+router.get('/logout/:token',auth,logout);
 
 
 module.exports=router;
