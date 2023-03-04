@@ -42,14 +42,13 @@ exports.register = async (req, res) => {
       await LocalUser.save();
     }
 
+    console.log("token");
+    console.log(process.env.jwtPrivateKey);
     const token = jwt.sign({ email: email }, process.env.jwtPrivateKey);
+    console.log(token)
 
     await user.save();
 
-    const option = {
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      httpOnly: true,
-    };
 
     res.status(201).json({
       success: true,
