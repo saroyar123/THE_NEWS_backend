@@ -2,18 +2,22 @@ const User = require("../model/userModel");
 const Post=require("../model/postModel");
 const jwt = require("jsonwebtoken");
 const LocationDB=require('../model/location');
+const cloudinary=require('cloudinary');
 
 // register user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password,location } = req.body;
+    console.log("rc1")
+    const { name, email, password,location,image } = req.body;
 
-    if (!name || !email || !password||!location) {
+    console.log(image)
+    if (!name || !email || !password||!location||!image) {
       return res.status(400).json({
         success: false,
         message: "provide all document",
       });
     }
+    console.log("rc3")
 
     let lgUser;
     if (User.length > 0) {
@@ -27,7 +31,25 @@ exports.register = async (req, res) => {
       });
     }
 
-    const user = await User.create({ name, email, password,location });
+    console.log("cloudinary call");
+    // handel cloudinary
+    const myCloud = await cloudinary.v2.uploader.upload(image, {
+      folder: "theNews_posts",
+    });
+    
+    console.log("cloudinary call end")
+
+    const user = await User.create({ 
+      name, 
+      email, 
+      password,
+      location,
+      image:{
+        public_id: myCloud.public_id, 
+        url: myCloud.secure_url,
+      }
+
+    });
 
     const LocalUser=await LocationDB.findOne({name:location.name});
     if(!LocalUser)

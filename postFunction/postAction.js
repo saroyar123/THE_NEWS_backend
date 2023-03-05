@@ -1,21 +1,41 @@
 const Post = require("../model/postModel");
 const User = require("../model/userModel");
 const LocationDB=require('../model/location');
+const cloudinary=require('cloudinary');
 
 // create post
 exports.createPost = async (req, res) => {
   try {
     const { caption, image,location} = req.body;
+    console.log(caption,image,location);
     if (!caption || !image||!location) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "need all document",
       });
     }
-    const userPost = await Post.create({ caption, image,location});
+
+
+    console.log("cloudinary call");
+    // handel cloudinary
+    const myCloud = await cloudinary.v2.uploader.upload(image, {
+      folder: "theNews_posts",
+    });
+    
+    console.log("cloudinary call end")
+
+    const userPost = await Post.create({ 
+      caption,
+      location,
+      image:{
+        public_id: myCloud.public_id, 
+        url: myCloud.secure_url,
+      }
+    });
     req.user.posts.push(userPost);
     await req.user.save();
 
+    console.log("post create")
     const LocalUser=await LocationDB.findOne({name:location.name});
     if(!LocalUser)
     {
@@ -31,10 +51,11 @@ exports.createPost = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      message:"post created",
       userPost,
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });

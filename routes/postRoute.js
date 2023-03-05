@@ -4,7 +4,7 @@ const { createPost, likePost, deletePost, commentOnPost, deleteComment } = requi
 
 const router=express.Router();
 
-router.post('/post',auth,createPost);
+router.post('/post/:token',auth,createPost);
 router.get('/like/:id/:lu',auth,likePost);
 router.delete('/post/:id',auth,deletePost);
 router.post('/comment/:id',auth,commentOnPost);

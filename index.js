@@ -5,18 +5,24 @@ const cookieparser=require('cookie-parser');
 const {connect}=require('./database/connect');
 const userRouter = require('./routes/userRoute');
 const postRouter=require('./routes/postRoute');
-// var util= require('util');
-// var encoder = new util.TextEncoder('utf-8');
+const cloudinary=require('cloudinary');
 
 
 dotenv.config();
+cloudinary.config({
+  cloud_name:process.env.cloudinar_CloudNamne,
+  api_key:process.env.cloudinar_ApiKey,
+  api_secret:process.env.cloudinar_ApiSecret,
+})
 connect();
 
 const app=express();
 
 app.use(cors());
-app.use(express.json());
 app.use(cookieparser());
+app.use(express.json({limit:'50mb'}));
+app.use(express.urlencoded({limit:'50mb',extended:true}));
+
 
 
 app.get('/',(req,res)=>{
