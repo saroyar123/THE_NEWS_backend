@@ -9,13 +9,17 @@ const postSchema=new mongoose.Schema({
         public_id:String,
         url:String,
     },
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"users"
+    },
     likes:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"users"
     },],
     disLikes:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"users"
     }],
     location: {
         name:String,

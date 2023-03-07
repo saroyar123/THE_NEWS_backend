@@ -7,7 +7,7 @@ const cloudinary=require('cloudinary');
 exports.createPost = async (req, res) => {
   try {
     const { caption, image,location} = req.body;
-    console.log(caption,image,location);
+    // console.log(caption,image,location);
     if (!caption || !image||!location) {
       return res.status(200).json({
         success: false,
@@ -30,7 +30,9 @@ exports.createPost = async (req, res) => {
       image:{
         public_id: myCloud.public_id, 
         url: myCloud.secure_url,
-      }
+      },
+      owner:req.user
+
     });
     req.user.posts.push(userPost);
     await req.user.save();
@@ -172,14 +174,14 @@ exports.likePost = async (req, res) => {
     }
 
 
-    res.status(400).json({
+    res.status(200).json({
       success:false,
       message:"something is wrong"
     })
 
   
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -190,17 +192,23 @@ exports.likePost = async (req, res) => {
 
 exports.deletePost = async (req, res) => {
   try {
+    console.log("delete call")
     const postId = req.params.id;
-
-    const post = await Post.findOne({ _id: postId });
+    console.log(postId)
+    
+    const post = await Post.findOne({ _id: postId.toString() });
 
     if (!post) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "post not found",
       });
     }
     // console.log(postId)
+
+
+    // delete the image from cloudnary
+    await cloudinary.v2.uploader.destroy(post.image.public_id);
 
     let userIndex = -1;
     userIndex = await req.user.posts.indexOf(postId);
@@ -233,7 +241,7 @@ exports.deletePost = async (req, res) => {
       message: "your post is successfully deleted",
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -269,7 +277,7 @@ exports.commentOnPost=async(req,res)=>{
 
 
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -311,7 +319,7 @@ exports.deleteComment=async(req,res)=>{
     {
       return res.status(400).json({
         success:false,
-        message:"commet first"
+        message:"comment first"
       })
     }
 
@@ -336,7 +344,28 @@ exports.deleteComment=async(req,res)=>{
 
 
   } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+
+// get all the  post for the 
+
+exports.getAllPosts=async(req,res)=>{
+  try {
+    
+    const Posts=await Post.find().populate('owner');
     res.status(200).json({
+      success:true,
+      message:"get all the posts",
+      Posts
+    })
+
+  } catch (error) {
+    res.status(400).json({
       success: false,
       message: error.message,
     });

@@ -10,7 +10,6 @@ exports.register = async (req, res) => {
     console.log("rc1")
     const { name, email, password,location,image } = req.body;
 
-    console.log(image)
     if (!name || !email || !password||!location||!image) {
       return res.status(400).json({
         success: false,
@@ -34,10 +33,9 @@ exports.register = async (req, res) => {
     console.log("cloudinary call");
     // handel cloudinary
     const myCloud = await cloudinary.v2.uploader.upload(image, {
-      folder: "theNews_posts",
+      folder: "theNewsUsers",
     });
-    
-    console.log("cloudinary call end")
+
 
     const user = await User.create({ 
       name, 
