@@ -253,6 +253,7 @@ exports.deletePost = async (req, res) => {
 
 exports.commentOnPost=async(req,res)=>{
   try {
+    console.log("comment call")
     const post_Id=req.params.id;
     const {comment}=req.body;
 
