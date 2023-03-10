@@ -192,10 +192,7 @@ exports.deleteUser=async(req,res)=>{
 exports.logout=async(req,res)=>{
   try {
     
-    res.status(200).cookie("token",null,{
-      expires:new Date(Date.now()),
-      httpOnly:true
-    }).json({
+     res.status(200).json({
       success:true,
       message:"you are logout"
     })
