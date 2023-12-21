@@ -3,9 +3,8 @@ const User=require('../model/userModel')
 
 exports.auth=async(req,res,next)=>{
     try {
-        
-        const {token}=req.params;
-        console.log(req.params)
+        const token =req.header('authorization');
+        console.log(token)
         if(!token)
         {
             return res.status(200).json({

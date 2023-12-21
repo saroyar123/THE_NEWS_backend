@@ -7,16 +7,17 @@ const cloudinary=require('cloudinary');
 // register user
 exports.register = async (req, res) => {
   try {
-    console.log("rc1")
+
     const { name, email, password,location,image } = req.body;
 
     if (!name || !email || !password||!location||!image) {
       return res.status(400).json({
         success: false,
         message: "provide all document",
+        data:null
       });
     }
-    console.log("rc3")
+
 
     let lgUser;
     if (User.length > 0) {
@@ -27,10 +28,10 @@ exports.register = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "user already register",
+        data:null
       });
     }
 
-    console.log("cloudinary call");
     // handel cloudinary
     const myCloud = await cloudinary.v2.uploader.upload(image, {
       folder: "theNewsUsers",
@@ -62,8 +63,6 @@ exports.register = async (req, res) => {
       await LocalUser.save();
     }
 
-    console.log("token");
-    console.log(process.env.jwtPrivateKey);
     const token = jwt.sign({ email: email }, process.env.jwtPrivateKey);
     console.log(token)
 
@@ -72,13 +71,16 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      user,
-      token,
+      message:"User Register Success fully",
+      data:{
+        token:token
+      }
     });
   } catch (error) {
     res.status(200).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 };
@@ -87,11 +89,12 @@ exports.register = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const data = await User.find({email:req.user.email}).populate('posts');
+    const userData = await User.find({email:req.user.email}).populate('posts');
 
     res.status(200).json({
       success: true,
-      data,
+      message:"All data of user are send",
+      data:userData
     });
   } catch (error) {
     res.status(200).json({
@@ -105,12 +108,11 @@ exports.getAllUser = async (req, res) => {
 exports.userLogin = async (req, res) => {
   try {
     const { password, email } = req.body;
-    // console.log(req.cookie)
-
     if (!password || !email) {
       return res.status(400).json({
         success: false,
         message: "provide all data",
+        data:null
       });
     }
 
@@ -120,6 +122,7 @@ exports.userLogin = async (req, res) => {
       return res.status(200).json({
         success: false,
         message: "register first",
+        data:null
       });
     }
 
@@ -129,13 +132,16 @@ exports.userLogin = async (req, res) => {
       .status(200)
       .json({
         success:true,
-        user,
-        token
+        message:"User Login Success Fully",
+        data:{
+          token:token
+        }
       });
   } catch (error) {
     res.status(200).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 };
@@ -170,12 +176,10 @@ exports.deleteUser=async(req,res)=>{
 
     await req.user.remove();
 
-    res.status(200).cookie("token",null,{
-      expires:new Date(Date.now()),
-      httpOnly:true
-    }).json({
+    res.status(200).json({
       success:true,
-      message:"your account is deleted"
+      message:"your account is deleted",
+      data:null
     })
 
 
@@ -183,6 +187,7 @@ exports.deleteUser=async(req,res)=>{
     res.status(200).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 }
@@ -194,7 +199,8 @@ exports.logout=async(req,res)=>{
     
      res.status(200).json({
       success:true,
-      message:"you are logout"
+      message:"you are logout",
+      data:null
     })
 
 
@@ -203,6 +209,7 @@ exports.logout=async(req,res)=>{
     res.status(200).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 }

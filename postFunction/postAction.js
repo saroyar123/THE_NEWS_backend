@@ -296,7 +296,8 @@ exports.deleteComment=async(req,res)=>{
     {
        return res.status(400).json({
         success:false,
-        message:"post not exist"
+        message:"post not exist",
+        data:null
        })
     }
 
@@ -340,7 +341,8 @@ exports.deleteComment=async(req,res)=>{
 
     res.status(200).json({
       success:true,
-      message:"your comment is deleted"
+      message:"your comment is deleted",
+      data:null
     })
 
 
@@ -362,7 +364,7 @@ exports.getAllPosts=async(req,res)=>{
     res.status(200).json({
       success:true,
       message:"get all the posts",
-      Posts
+      data:Posts
     })
 
   } catch (error) {
