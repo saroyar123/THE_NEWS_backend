@@ -64,7 +64,7 @@ exports.register = async (req, res) => {
     }
 
     const token = jwt.sign({ email: email }, process.env.jwtPrivateKey);
-    console.log(token)
+    // console.log(token)
 
     await user.save();
 
@@ -89,7 +89,7 @@ exports.register = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const userData = await User.find({email:req.user.email}).populate('posts');
+    const userData = await User.findOne({email:req.user.email}).populate('posts');
 
     res.status(200).json({
       success: true,
@@ -200,7 +200,9 @@ exports.logout=async(req,res)=>{
      res.status(200).json({
       success:true,
       message:"you are logout",
-      data:null
+      data:{
+        id:req.user._id
+      }
     })
 
 

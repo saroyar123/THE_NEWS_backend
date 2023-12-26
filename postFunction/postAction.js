@@ -6,33 +6,34 @@ const cloudinary=require('cloudinary');
 // create post
 exports.createPost = async (req, res) => {
   try {
-    const { caption, image,location} = req.body;
+    const { caption, image,description,location} = req.body;
     // console.log(caption,image,location);
-    if (!caption || !image||!location) {
-      return res.status(200).json({
+    if (!caption || !image||!description) {
+      return res.status(400).json({
         success: false,
         message: "need all document",
+        data:null
       });
     }
 
 
-    console.log("cloudinary call");
+    // console.log("cloudinary call");
     // handel cloudinary
     const myCloud = await cloudinary.v2.uploader.upload(image, {
       folder: "theNews_posts",
     });
     
-    console.log("cloudinary call end")
+    // console.log("cloudinary call end")
 
     const userPost = await Post.create({ 
       caption,
-      location,
+      description,
       image:{
         public_id: myCloud.public_id, 
         url: myCloud.secure_url,
       },
-      owner:req.user
-
+      owner:req.user,
+      location
     });
     req.user.posts.push(userPost);
     await req.user.save();
@@ -54,7 +55,7 @@ exports.createPost = async (req, res) => {
     res.status(200).json({
       success: true,
       message:"post created",
-      userPost,
+      data:userPost,
     });
   } catch (error) {
     res.status(400).json({
@@ -81,6 +82,7 @@ exports.likePost = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "post not found",
+        data:null
       });
     }
 
@@ -100,6 +102,7 @@ exports.likePost = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "you are like is remove from the post",
+        data:null
       });
     }
     else if(lu===1)
@@ -127,6 +130,7 @@ exports.likePost = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "you like the post",
+        data:null
       });
     }
 
@@ -144,6 +148,7 @@ exports.likePost = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "you are unlike is remove from the post",
+        data:null
       });
     }
     else if(lu===2)
@@ -169,14 +174,16 @@ exports.likePost = async (req, res) => {
 
       return res.status(200).json({
         success:true,
-        message:"unlike the post"
+        message:"unlike the post",
+        data:null
       })
     }
 
 
     res.status(200).json({
       success:false,
-      message:"something is wrong"
+      message:"something is wrong",
+      data:null
     })
 
   
@@ -184,6 +191,7 @@ exports.likePost = async (req, res) => {
     res.status(400).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 };
@@ -202,6 +210,7 @@ exports.deletePost = async (req, res) => {
       return res.status(200).json({
         success: false,
         message: "post not found",
+        data:null
       });
     }
     // console.log(postId)
@@ -218,6 +227,7 @@ exports.deletePost = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "you not authenticated user or post not found",
+        data:null
       });
     }
 
@@ -239,11 +249,13 @@ exports.deletePost = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "your post is successfully deleted",
+      data:null
     });
   } catch (error) {
     res.status(400).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 };
@@ -261,7 +273,9 @@ exports.commentOnPost=async(req,res)=>{
     {
       return res.status(400).status({
         success:false,
-        message:"some data is mising"
+        message:"some data is mising",
+        data:null
+
       })
     }
     const post=await Post.findOne({_id:post_Id});
@@ -273,7 +287,8 @@ exports.commentOnPost=async(req,res)=>{
 
     res.status(200).json({
       success:true,
-      message:"Your comment is added"
+      message:"Your comment is added",
+      data:null
     })
 
 
@@ -281,6 +296,7 @@ exports.commentOnPost=async(req,res)=>{
     res.status(400).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 };
@@ -321,7 +337,8 @@ exports.deleteComment=async(req,res)=>{
     {
       return res.status(400).json({
         success:false,
-        message:"comment first"
+        message:"comment first",
+        data:null
       })
     }
 
@@ -329,7 +346,8 @@ exports.deleteComment=async(req,res)=>{
     {
       return res.status(400).json({
         success:false,
-        message:"user may not comment on this post"
+        message:"user may not comment on this post",
+        data:null
       })
     }
 
@@ -350,6 +368,7 @@ exports.deleteComment=async(req,res)=>{
     res.status(400).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 }
@@ -371,6 +390,7 @@ exports.getAllPosts=async(req,res)=>{
     res.status(400).json({
       success: false,
       message: error.message,
+      data:null
     });
   }
 }

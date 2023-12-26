@@ -3,15 +3,10 @@ const User=require('../model/userModel')
 
 exports.auth=async(req,res,next)=>{
     try {
-        const token =req.header('authorization');
-        console.log(token)
-        if(!token)
-        {
-            return res.status(200).json({
-                success:false,
-                message:"you are not authinticated"
-            })
-        }
+        // console.log(req.headers.auhtarization)
+        const token =req.headers.autharization.split(' ')[1];
+        // console.log(token)
+        if(!token) throw new Error("Token Not Found")
 
 
         const userEmail=jwt.verify(token,process.env.jwtPrivateKey);

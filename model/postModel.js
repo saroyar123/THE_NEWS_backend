@@ -5,6 +5,10 @@ const postSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    description:{
+      type:String,
+      required:true
+    },
     image:{
         public_id:String,
         url:String,
