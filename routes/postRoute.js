@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 router.post("/post", auth, createPost);
-router.get("/like/:token/:id/:lu", auth, likePost);
+router.get("/like/:id/:lu", auth, likePost);
 router.delete("/deletepost/:token/:id", auth, deletePost);
 router.post("/comment/:token/:id", auth, commentOnPost);
 router.delete("/comment/:token/:id", auth, deleteComment);
