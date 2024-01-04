@@ -44,7 +44,7 @@ const postSchema=new mongoose.Schema({
         comment:String,
         commented_user:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:"user"
+            ref:"users"
         }
     }]
 })

@@ -8,7 +8,7 @@ exports.createPost = async (req, res) => {
   try {
     const { caption, image,description,location} = req.body;
     // console.log(caption,image,location);
-    if (!caption || !image||!description) {
+    if (!caption || !image||!description||!location) {
       return res.status(400).json({
         success: false,
         message: "need all document",
@@ -264,8 +264,7 @@ exports.deletePost = async (req, res) => {
 // comment on a post
 
 exports.commentOnPost=async(req,res)=>{
-  try {
-    console.log("comment call")
+  try { 
     const post_Id=req.params.id;
     const {comment}=req.body;
 
@@ -279,7 +278,9 @@ exports.commentOnPost=async(req,res)=>{
       })
     }
     const post=await Post.findOne({_id:post_Id});
+    post.comments.reverse();
     post.comments.push({comment:comment,commented_user:req.user});
+    post.comments.reverse();
     await post.save();
 
     req.user.commentOnPosts.push(post);
@@ -379,7 +380,10 @@ exports.deleteComment=async(req,res)=>{
 exports.getAllPosts=async(req,res)=>{
   try {
     
-    const Posts=await Post.find().populate('owner');
+    const Posts=await Post.find().populate('owner').populate({
+      path:"comments.commented_user",
+      model:"users"
+    });
     res.status(200).json({
       success:true,
       message:"get all the posts",
