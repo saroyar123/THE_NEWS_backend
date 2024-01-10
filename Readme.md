@@ -22,7 +22,6 @@ router.delete('/comment/:id',auth,deleteComment)
 
 ```
 ```
-working on the frontend
 Frontend:-https://github.com/saroyar123/The_news_Frontend
 ```
 
