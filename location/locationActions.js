@@ -6,12 +6,12 @@ function toRad(Value)
 }
 
 exports.findDistance=(l1,l2)=>{
-  try {
+  // console.log(l1,l2)
       var lat1, lon1, lat2, lon2 ;
-      lat1=l1.coordinates.latitude;
-      lat2=l2.coordinates.latitude;
-      lon1=l1.coordinates.logititude;
-      lon2=l2.coordinates.logititude
+      lat1=l1.latitude;
+      lat2=l2.latitude;
+      lon1=l1.logititude;
+      lon2=l2.logititude;
     
       var R = 6371; // km
       var dLat = toRad(lat2-lat1);
@@ -23,12 +23,6 @@ exports.findDistance=(l1,l2)=>{
         Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
       var d = R * c;
+      console.log(d)
       return d;
-    
-
-    // Converts numeric degrees to radians
-   
-  } catch (error) {
-    console.log(error.message);
-  }
 }
