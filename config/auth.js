@@ -3,8 +3,8 @@ const User=require('../model/userModel')
 
 exports.auth=async(req,res,next)=>{
     try {
-        // console.log(req.headers.auhtarization)
-        const token =req.headers.autharization.split(' ')[1];
+        // console.log(req.headers.authorization)
+        const token =req.headers.authorization.split(' ')[1];
         // console.log(token)
         if(!token) throw new Error("Token Not Found")
 
@@ -14,7 +14,7 @@ exports.auth=async(req,res,next)=>{
 
         if(!user)
         {
-            return res.status(200).json({
+            return res.status(400).json({
                 success:false,
                 message:"you are not authinticated"
             })
@@ -25,7 +25,7 @@ exports.auth=async(req,res,next)=>{
         next();
 
     } catch (error) {
-        res.status(200).json({
+        res.status(400).json({
             success:false,
             message:error.message
         })

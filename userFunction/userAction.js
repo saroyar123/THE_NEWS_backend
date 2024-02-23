@@ -3,6 +3,8 @@ const Post=require("../model/postModel");
 const jwt = require("jsonwebtoken");
 const LocationDB=require('../model/location');
 const cloudinary=require('cloudinary');
+const postModel = require("../model/postModel");
+const { findDistance } = require("../location/locationActions");
 
 // register user
 exports.register = async (req, res) => {
@@ -97,7 +99,7 @@ exports.getAllUser = async (req, res) => {
       data:userData
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -213,6 +215,32 @@ exports.logout=async(req,res)=>{
       message: error.message,
       data:null
     });
+  }
+}
+
+
+
+// find the posts which are near to user
+exports.post_Near_to_User=async(req,res)=>{
+  try {
+    const userLocation=req.user.location.coordinates;
+    // console.log(userLocation)
+    const allPosts=await postModel.find();
+    const userNearPosts=allPosts.filter((posts)=>{
+      return findDistance(userLocation,posts.location.coordinates)<=400;
+    })
+
+    res.status(200).json({
+      success:true,
+      data:userNearPosts
+    })
+    
+  } catch (error) {
+    res.status(200).json({
+      success:false,
+      data:null,
+      message:error.message
+    })
   }
 }
 

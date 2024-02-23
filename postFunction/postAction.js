@@ -7,7 +7,7 @@ const cloudinary=require('cloudinary');
 exports.createPost = async (req, res) => {
   try {
     const { caption, image,description,location} = req.body;
-    // console.log(caption,image,location);
+
     if (!caption || !image||!description||!location) {
       return res.status(400).json({
         success: false,
@@ -16,14 +16,10 @@ exports.createPost = async (req, res) => {
       });
     }
 
-
-    // console.log("cloudinary call");
-    // handel cloudinary
     const myCloud = await cloudinary.v2.uploader.upload(image, {
       folder: "theNews_posts",
     });
     
-    // console.log("cloudinary call end")
 
     const userPost = await Post.create({ 
       caption,
