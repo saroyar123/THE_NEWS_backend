@@ -99,7 +99,7 @@ exports.getAllUser = async (req, res) => {
       data:userData
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });

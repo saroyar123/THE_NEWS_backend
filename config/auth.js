@@ -14,7 +14,7 @@ exports.auth=async(req,res,next)=>{
 
         if(!user)
         {
-            return res.status(200).json({
+            return res.status(400).json({
                 success:false,
                 message:"you are not authinticated"
             })
@@ -25,7 +25,7 @@ exports.auth=async(req,res,next)=>{
         next();
 
     } catch (error) {
-        res.status(200).json({
+        res.status(400).json({
             success:false,
             message:error.message
         })
