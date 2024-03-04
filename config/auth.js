@@ -10,7 +10,13 @@ exports.auth=async(req,res,next)=>{
 
 
         const userEmail=jwt.verify(token,process.env.jwtPrivateKey);
-        const user=await User.findOne({email:userEmail.email})
+        const user=await User.findOne({email:userEmail.email}).populate({
+            path:"posts",
+            populate:{      
+                path:"comments.commented_user",
+                model:"users"
+            }
+        })
 
         if(!user)
         {
