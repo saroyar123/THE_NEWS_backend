@@ -91,7 +91,13 @@ exports.register = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const userData = await User.findOne({email:req.user.email}).populate('posts');
+    const userData = await User.findOne({email:req.user.email}).populate({
+      path:"posts",
+      populate:{
+        path:"comments.commented_user",
+        model:"users"
+      }
+    });
 
     res.status(200).json({
       success: true,
