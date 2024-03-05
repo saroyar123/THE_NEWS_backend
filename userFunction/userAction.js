@@ -230,10 +230,11 @@ exports.logout=async(req,res)=>{
 exports.post_Near_to_User=async(req,res)=>{
   try {
     const userLocation=req.user.location.coordinates;
-    // console.log(userLocation)
+    const distance=parseInt(req.query.distance)||100;
+
     const allPosts=await postModel.find();
     const userNearPosts=allPosts.filter((posts)=>{
-      return findDistance(userLocation,posts.location.coordinates)<=400;
+      return findDistance(userLocation,posts.location.coordinates)<=distance;
     })
 
     res.status(200).json({
