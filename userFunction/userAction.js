@@ -210,12 +210,9 @@ exports.post_Near_to_User = async (req, res) => {
     const userLocation = req.user.location.coordinates;
     const distance = parseInt(req.query.distance) || 100;
 
-    const allPosts = await postModel.find().populate({
-      path: "posts",
-      populate: {
-        path: "comments.commented_user",
-        model: "users",
-      },
+    const allPosts = await postModel.find().populate('owner').populate({
+      path:"comments.commented_user",
+      model:"users"
     });
     const userNearPosts = allPosts.filter((posts) => {
       return findDistance(userLocation, posts.location.coordinates) <= distance;
